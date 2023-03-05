@@ -28,7 +28,7 @@ docker run --rm \
 
 ### `ENPHASE_LOCAL_API_URL`
 
-The full URL to your local Enphase Envoy Proxy. This might be something like `https://192.168.1.200/` or `https://envoy-proxy.tools.svc.cluster.local`.
+The full URL to your local [Enphase Envoy Proxy](https://github.com/paullockaby/enphase-proxy). This might be something like `http://192.168.1.200/` or `http://enphase-proxy.tools.svc.cluster.local:8080/`.
 
 ## Trademarks
 
