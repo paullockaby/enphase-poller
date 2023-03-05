@@ -1,9 +1,11 @@
 import importlib.metadata
+import json
 import logging
 from datetime import datetime
 
 import psycopg
 import requests
+import tenacity
 
 logger = logging.getLogger(__name__)
 
@@ -21,12 +23,24 @@ class APIClient:
         self.session = requests.session()
         self.session.headers.update({"User-Agent": ""})
 
+    @tenacity.retry(
+        stop=(tenacity.stop_after_delay(30)),
+        wait=tenacity.wait_random(min=1, max=2),
+        before_sleep=tenacity.before_sleep_log(logger, logging.ERROR),
+        reraise=True,
+    )
     def call(self: "APIClient", path: str) -> dict:
         api_url = self.api_url.rstrip("/")
         path = path.lstrip("/")
         result = self.session.get(f"{api_url}/{path}")
         result.raise_for_status()
-        return result.json()
+
+        try:
+            return result.json()
+        except json.JSONDecodeError:
+            logger.error("received invalid data from API:")
+            logger.error(result.content)
+            raise
 
 
 def run(
@@ -35,7 +49,6 @@ def run(
     client = APIClient(api_url)
 
     data = {
-        "home": client.call("/home.json"),
         "production": client.call("/production.json"),
         "inverters": client.call("/api/v1/production/inverters"),
     }
