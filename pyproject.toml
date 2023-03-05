@@ -6,10 +6,12 @@ authors = ["Paul Lockaby <paul@paullockaby.com>"]
 packages = [{include = "enphase_poller", from = "src"}]
 
 [tool.poetry.scripts]
+enphase_poller = "enphase_poller:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"
 requests = "^2.28.2"
+psycopg = {extras = ["binary"], version = "^3.1.8"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.1"

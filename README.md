@@ -12,7 +12,7 @@ poetry install
 Assuming that you have set up your environment as described later in this document, you can test the application by running this command:
 
 ```
-poetry run python3 -m enphase_poller
+poetry run enphase_poller --api-url=http://localhost:8080/
 ```
 
 Still assuming that your environment is configured, an alternative way to run this is with Docker, like this:

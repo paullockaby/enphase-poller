@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source=https://github.com/paullockaby/enphase-pol
 # install updates and dependencies
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -q update && apt-get -y upgrade && \
-    apt-get install --no-install-recommends -y tini && \
+    apt-get install --no-install-recommends -y tini libpq5 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # used all over the place
