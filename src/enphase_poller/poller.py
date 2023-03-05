@@ -154,6 +154,7 @@ def run(
                     %(dev_type)s, %(serial_number)s,
                     %(last_report_watts)s, %(max_report_watts)s
                 )
+                ON CONFLICT DO NOTHING
             """,
             inverter_data,
         )
