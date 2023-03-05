@@ -2,6 +2,7 @@ import importlib.metadata
 import json
 import logging
 from datetime import datetime
+from time import perf_counter as time_now
 
 import psycopg
 import requests
@@ -48,10 +49,16 @@ def run(
 ) -> None:
     client = APIClient(api_url)
 
+    timer = time_now()
     data = {
         "production": client.call("/production.json"),
         "inverters": client.call("/api/v1/production/inverters"),
     }
+    logger.info(
+        "successfully polled the enphase envoy device in {:.4f} seconds".format(
+            time_now() - timer,
+        ),
+    )
 
     inverter_data = []
     for inverter in data["inverters"]:
