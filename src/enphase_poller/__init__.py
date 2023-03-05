@@ -11,7 +11,7 @@ __version__ = get_version()
 
 
 def parse_arguments(arguments: List[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(prog="welwick")
+    parser = argparse.ArgumentParser(prog="enphase_poller")
 
     parser.add_argument(
         "--api-url",
