@@ -80,8 +80,6 @@ def run(
                 "apprnt_pwr": datum["apprntPwr"],
                 "pwr_factor": datum["pwrFactor"],
                 "react_pwr": datum["reactPwr"],
-                "rms_current": datum["rmsCurrent"],
-                "rms_voltage": datum["rmsVoltage"],
                 "vah_today": datum["vahToday"],
                 "vah_lifetime": datum["vahLifetime"],
                 "varh_lag_today": datum["varhLagToday"],
@@ -102,8 +100,6 @@ def run(
                 "apprnt_pwr": datum["apprntPwr"],
                 "pwr_factor": datum["pwrFactor"],
                 "react_pwr": datum["reactPwr"],
-                "rms_current": datum["rmsCurrent"],
-                "rms_voltage": datum["rmsVoltage"],
                 "vah_today": datum["vahToday"],
                 "vah_lifetime": datum["vahLifetime"],
                 "varh_lag_today": datum["varhLagToday"],
@@ -123,7 +119,6 @@ def run(
                 INSERT INTO public.production (
                     reading_time,
                     apprnt_pwr, pwr_factor, react_pwr,
-                    rms_current, rms_voltage,
                     vah_today, vah_lifetime,
                     varh_lag_today, varh_lag_lifetime, varh_lead_today, varh_lead_lifetime,
                     w_now, wh_today, wh_last7days, wh_lifetime
@@ -131,7 +126,6 @@ def run(
                 VALUES (
                     %(reading_time)s,
                     %(apprnt_pwr)s, %(pwr_factor)s, %(react_pwr)s,
-                    %(rms_current)s, %(rms_voltage)s,
                     %(vah_today)s, %(vah_lifetime)s,
                     %(varh_lag_today)s, %(varh_lag_lifetime)s, %(varh_lead_today)s, %(varh_lead_lifetime)s,
                     %(w_now)s, %(wh_today)s, %(wh_last7days)s, %(wh_lifetime)s
@@ -145,7 +139,6 @@ def run(
                 INSERT INTO public.consumption (
                     reading_time,
                     apprnt_pwr, pwr_factor, react_pwr,
-                    rms_current, rms_voltage,
                     vah_today, vah_lifetime,
                     varh_lag_today, varh_lag_lifetime, varh_lead_today, varh_lead_lifetime,
                     w_now, wh_today, wh_last7days, wh_lifetime
@@ -153,7 +146,6 @@ def run(
                 VALUES (
                     %(reading_time)s,
                     %(apprnt_pwr)s, %(pwr_factor)s, %(react_pwr)s,
-                    %(rms_current)s, %(rms_voltage)s,
                     %(vah_today)s, %(vah_lifetime)s,
                     %(varh_lag_today)s, %(varh_lag_lifetime)s, %(varh_lead_today)s, %(varh_lead_lifetime)s,
                     %(w_now)s, %(wh_today)s, %(wh_last7days)s, %(wh_lifetime)s
