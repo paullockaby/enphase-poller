@@ -28,6 +28,12 @@ docker run --rm enphase_poller --api-url=http://envoy-proxy:8080
 
 The full URL to your local [Enphase Envoy Proxy](https://github.com/paullockaby/enphase-proxy). This might be something like `http://192.168.1.200/` or `http://enphase-proxy.tools.svc.cluster.local:8080/`.
 
+## Example
+
+Once you've configured your poller to collect the data that you want, [there is an example dashboard in the `examples` directory](https://github.com/paullockaby/enphase-poller/blob/main/examples/basic-grafana-dashboard.png?raw=true). It looks like this:
+
+![Example Grafana Dashboard for Enphase Poller](https://github.com/paullockaby/enphase-poller/blob/main/examples/basic-grafana-dashboard.png?raw=true)
+
 ## Trademarks
 
 Enphase(R), Envoy(R) are trademarks of Enphase Energy(R).
