@@ -24,7 +24,7 @@ docker run --rm enphase_poller --api-url=http://envoy-proxy:8080
 
 ## Configuration
 
-### `ENPHASE_LOCAL_API_URL`
+### `--api-url`
 
 The full URL to your local [Enphase Envoy Proxy](https://github.com/paullockaby/enphase-proxy). This might be something like `http://192.168.1.200/` or `http://enphase-proxy.tools.svc.cluster.local:8080/`.
 
