@@ -19,9 +19,7 @@ Still assuming that your environment is configured, an alternative way to run th
 
 ```
 docker build -t enphase_poller .
-docker run --rm \
-    -e ENPHASE_LOCAL_API_URL=$ENPHASE_LOCAL_API_URL \
-    enphase_poller
+docker run --rm enphase_poller --api-url=http://envoy-proxy:8080
 ```
 
 ## Configuration
