@@ -71,6 +71,7 @@
             }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -120,7 +121,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, w_now/1000 AS \"Consumed\"\nFROM public.consumption",
+          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, w_now/1000 AS \"Consumed\"\nFROM public.consumption\nWHERE $__timeFilter(reading_time)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -210,7 +211,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(c.time, '1m') AS time, (p.wh_lifetime/1000)/55.3\nFROM (SELECT date_trunc('minute', reading_time) AS time, * FROM public.consumption) AS c\nJOIN (SELECT date_trunc('minute', reading_time) AS time, * FROM public.production) AS p ON c.time = p.time;",
+          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, (wh_lifetime/1000)/55.3\nFROM public.production\nWHERE $__timeFilter(reading_time)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -286,6 +287,7 @@
             }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -331,7 +333,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, w_now/1000 AS \"Produced\"\nFROM public.production",
+          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, w_now/1000 AS \"Produced\"\nFROM public.production\nWHERE $__timeFilter(reading_time)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -422,7 +424,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(c.time, '1m') AS time, (c.wh_today/1000)*0.1456\nFROM (SELECT date_trunc('minute', reading_time) AS time, * FROM public.consumption) AS c\nJOIN (SELECT date_trunc('minute', reading_time) AS time, * FROM public.production) AS p ON c.time = p.time;",
+          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, (wh_today/1000)*${cost_per_kwh}\nFROM public.consumption\nWHERE $__timeFilter(reading_time)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -513,7 +515,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(c.time, '1m') AS time, (p.wh_today/1000)*0.1456\nFROM (SELECT date_trunc('minute', reading_time) AS time, * FROM public.consumption) AS c\nJOIN (SELECT date_trunc('minute', reading_time) AS time, * FROM public.production) AS p ON c.time = p.time;",
+          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, (wh_today/1000)*${cost_per_kwh}\nFROM public.production\nWHERE $__timeFilter(reading_time)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -558,6 +560,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "percentage",
             "steps": [
@@ -580,7 +583,7 @@
       "id": 5,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
@@ -602,7 +605,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, wh_today/1000 AS \"kWh Hours Today\"\nFROM public.consumption",
+          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, wh_today/1000 AS \"kWh Hours Today\"\nFROM public.consumption\nWHERE $__timeFilter(reading_time)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -637,6 +640,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "percentage",
             "steps": [
@@ -659,7 +663,7 @@
       "id": 6,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
@@ -681,7 +685,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, wh_lifetime/1000 AS \"kWh Hours Lifetime\"\nFROM public.consumption",
+          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, wh_lifetime/1000 AS \"kWh Hours Lifetime\"\nFROM public.consumption\nWHERE $__timeFilter(reading_time)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -716,6 +720,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "percentage",
             "steps": [
@@ -738,7 +743,7 @@
       "id": 7,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
@@ -760,7 +765,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, wh_today/1000 AS \"kWh Hours Today\"\nFROM public.production",
+          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, wh_today/1000 AS \"kWh Hours Today\"\nFROM public.production\nWHERE $__timeFilter(reading_time)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -795,6 +800,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "percentage",
             "steps": [
@@ -817,7 +823,7 @@
       "id": 8,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
@@ -826,6 +832,9 @@
           ],
           "fields": "",
           "values": false
+        },
+        "text": {
+          "titleSize": 1
         },
         "textMode": "auto"
       },
@@ -839,7 +848,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, wh_lifetime/1000 AS \"kWh Hours Lifetime\"\nFROM public.production",
+          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, wh_lifetime/1000 AS \"kWh Hours Lifetime\"\nFROM public.production\nWHERE $__timeFilter(reading_time)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -920,7 +929,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(c.time, '1m') AS time, (c.wh_lifetime/1000)*0.1456\nFROM (SELECT date_trunc('minute', reading_time) AS time, * FROM public.consumption) AS c\nJOIN (SELECT date_trunc('minute', reading_time) AS time, * FROM public.production) AS p ON c.time = p.time;",
+          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, (wh_lifetime/1000)*${cost_per_kwh}\nFROM public.consumption\nWHERE $__timeFilter(reading_time)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1011,7 +1020,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(c.time, '1m') AS time, (p.wh_lifetime/1000)*0.1456\nFROM (SELECT date_trunc('minute', reading_time) AS time, * FROM public.consumption) AS c\nJOIN (SELECT date_trunc('minute', reading_time) AS time, * FROM public.production) AS p ON c.time = p.time;",
+          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, (wh_lifetime/1000)*${cost_per_kwh}\nFROM public.production\nWHERE $__timeFilter(reading_time)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1183,7 +1192,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(c.time, '1m') AS time,\n    p.w_now/1000 AS \"Produced\",\n    c.w_now/1000 AS \"Consumed\",\n    CASE\n        WHEN c.w_now > p.w_now THEN\n            (c.w_now-p.w_now)/1000\n        ELSE 0\n    END AS \"Imported\",\n    CASE\n        WHEN p.w_now > c.w_now THEN\n            (p.w_now-c.w_now)/1000\n        ELSE 0\n    END AS \"Exported\"\nFROM (SELECT date_trunc('minute', reading_time) AS time, * FROM public.consumption) AS c\nJOIN (SELECT date_trunc('minute', reading_time) AS time, * FROM public.production) AS p ON c.time = p.time;",
+          "rawSql": "SELECT $__timeGroup(c.time, '1m') AS time,\n    p.w_now/1000 AS \"Produced\",\n    c.w_now/1000 AS \"Consumed\",\n    CASE\n        WHEN c.w_now > p.w_now THEN\n            (c.w_now-p.w_now)/1000\n        ELSE 0\n    END AS \"Imported\",\n    CASE\n        WHEN p.w_now > c.w_now THEN\n            (p.w_now-c.w_now)/1000\n        ELSE 0\n    END AS \"Exported\"\nFROM (\n    SELECT date_trunc('minute', reading_time) AS time, *\n    FROM public.consumption\n    WHERE $__timeFilter(reading_time)\n) AS c\nJOIN (\n    SELECT date_trunc('minute', reading_time) AS time, *\n    FROM public.production\n    WHERE $__timeFilter(reading_time)\n) AS p ON c.time = p.time\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1206,15 +1215,262 @@
       ],
       "title": "Energy Usage",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "avS3Ylx4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": false,
+            "inspect": false
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Date"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time:dddd, MMMM Do, YYYY"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "kWh Consumed"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 25
+                    },
+                    {
+                      "color": "orange",
+                      "value": 50
+                    },
+                    {
+                      "color": "red",
+                      "value": 75
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "kWh Produced"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 15
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 30
+                    },
+                    {
+                      "color": "green",
+                      "value": 45
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Ratio"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "displayName",
+                "value": "Produced/Consumed Ratio"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 100
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 17,
+      "options": {
+        "footer": {
+          "countRows": false,
+          "fields": [
+            "kWh Consumed",
+            "kWh Produced"
+          ],
+          "reducer": [
+            "sum"
+          ],
+          "show": true
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Date"
+          }
+        ]
+      },
+      "pluginVersion": "9.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "avS3Ylx4k"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  date_trunc('day', c.time) AS \"Date\",\n  max(c.wh_today)/1000 AS \"kWh Consumed\",\n  max(p.wh_today)/1000 AS \"kWh Produced\",\n  max(p.wh_today)/max(c.wh_today)*100 AS \"Ratio\"\nFROM (\n    SELECT date_trunc('minute', reading_time) AS time, *\n    FROM public.consumption\n    WHERE reading_time - '11 days'::interval < $__timeTo() \n) AS c\nJOIN (\n    SELECT date_trunc('minute', reading_time) AS time, *\n    FROM public.production\n    WHERE reading_time - '11 days'::interval < $__timeTo() \n) AS p ON c.time = p.time\nGROUP by date_trunc('day', c.time)\nORDER by date_trunc('day', c.time) DESC\nLIMIT 30",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "consumption"
+        }
+      ],
+      "title": "Recent Consumption and Production",
+      "type": "table"
     }
   ],
-  "refresh": "",
+  "refresh": "1m",
   "revision": 1,
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "0.1456",
+          "value": "0.1456"
+        },
+        "description": "How much does each kWh cost?",
+        "hide": 0,
+        "label": "Cost Per kWh",
+        "name": "cost_per_kwh",
+        "options": [
+          {
+            "selected": true,
+            "text": "0.1456",
+            "value": "0.1456"
+          }
+        ],
+        "query": "0.1456",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
   },
   "time": {
     "from": "now-24h",
@@ -1234,6 +1490,6 @@
   "timezone": "America/Los_Angeles",
   "title": "Solar Power",
   "uid": "-wWEQ_xVk",
-  "version": 13,
+  "version": 20,
   "weekStart": ""
 }
