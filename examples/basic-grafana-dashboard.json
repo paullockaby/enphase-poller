@@ -90,7 +90,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 8,
         "w": 8,
         "x": 0,
         "y": 0
@@ -163,102 +163,11 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "text",
-            "mode": "continuous-RdYlGr"
+            "fixedColor": "red",
+            "mode": "fixed"
           },
+          "decimals": 2,
           "mappings": [],
-          "max": 200,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 4,
-        "x": 8,
-        "y": 0
-      },
-      "id": 19,
-      "options": {
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "avS3Ylx4k"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  max(p.wh_today)/max(c.wh_today)*100 AS \"Ratio\"\nFROM (\n    SELECT date_trunc('minute', reading_time) AS time, *\n    FROM public.consumption\n    WHERE $__timeFilter(reading_time)\n) AS c\nJOIN (\n    SELECT date_trunc('minute', reading_time) AS time, *\n    FROM public.production\n    WHERE $__timeFilter(reading_time)\n) AS p ON c.time = p.time;",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [
-                  {
-                    "name": "reading_time",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          },
-          "table": "consumption"
-        }
-      ],
-      "title": "Today's Production/Consumption Ratio",
-      "type": "gauge"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "avS3Ylx4k"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "text",
-            "mode": "continuous-RdYlGr"
-          },
-          "mappings": [],
-          "max": 200,
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -268,18 +177,21 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "currencyUSD"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
+        "h": 4,
         "w": 4,
-        "x": 12,
+        "x": 8,
         "y": 0
       },
-      "id": 18,
+      "id": 14,
       "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -288,10 +200,9 @@
           "fields": "",
           "values": false
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -301,7 +212,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  max(p.wh_lifetime)/max(c.wh_lifetime)*100 AS \"Ratio\"\nFROM (\n    SELECT date_trunc('minute', reading_time) AS time, *\n    FROM public.consumption\n    WHERE $__timeFilter(reading_time)\n) AS c\nJOIN (\n    SELECT date_trunc('minute', reading_time) AS time, *\n    FROM public.production\n    WHERE $__timeFilter(reading_time)\n) AS p ON c.time = p.time;",
+          "rawSql": "SELECT max(reading_time) AS time, wh_today/1000*${cost_per_kwh}\nFROM public.consumption\nWHERE $__timeFilter(reading_time)\nGROUP BY wh_today\nORDER BY 1 DESC\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -332,8 +243,99 @@
           "table": "consumption"
         }
       ],
-      "title": "Lifetime Production/Consumption Ratio",
-      "type": "gauge"
+      "title": "Today's Cost",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "avS3Ylx4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "blue",
+            "mode": "fixed"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "avS3Ylx4k"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT max(reading_time) AS time, wh_today/1000*${cost_per_kwh}\nFROM public.production\nWHERE $__timeFilter(reading_time)\nGROUP BY wh_today\nORDER BY 1 DESC\nLIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "reading_time",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "consumption"
+        }
+      ],
+      "title": "Today's Savings",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -392,7 +394,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 8,
         "w": 8,
         "x": 16,
         "y": 0
@@ -465,96 +467,6 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "green",
-            "mode": "fixed"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "🌲"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 8,
-        "x": 8,
-        "y": 6
-      },
-      "id": 12,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "avS3Ylx4k"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, (wh_lifetime/1000)/55.3\nFROM public.production\nWHERE $__timeFilter(reading_time)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [
-                  {
-                    "name": "reading_time",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          },
-          "table": "consumption"
-        }
-      ],
-      "title": "Lifetime Trees Saved",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "avS3Ylx4k"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
             "mode": "thresholds"
           },
           "mappings": [],
@@ -573,10 +485,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 4,
-        "x": 0,
-        "y": 7
+        "x": 8,
+        "y": 4
       },
       "id": 5,
       "options": {
@@ -593,7 +505,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -603,7 +515,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, wh_today/1000 AS \"kWh Hours Today\"\nFROM public.consumption\nWHERE $__timeFilter(reading_time)",
+          "rawSql": "SELECT max(reading_time) AS time, wh_today/1000\nFROM public.consumption\nWHERE $__timeFilter(reading_time)\nGROUP BY wh_today\nORDER BY 1 DESC\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -643,86 +555,6 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "red",
-                "value": null
-              }
-            ]
-          },
-          "unit": "kwatth"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 4,
-        "y": 7
-      },
-      "id": 6,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "avS3Ylx4k"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, wh_lifetime/1000 AS \"kWh Hours Lifetime\"\nFROM public.consumption\nWHERE $__timeFilter(reading_time)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Consumed Lifetime",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "avS3Ylx4k"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "percentage",
-            "steps": [
-              {
                 "color": "blue",
                 "value": null
               }
@@ -733,10 +565,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 4,
-        "x": 16,
-        "y": 7
+        "x": 12,
+        "y": 4
       },
       "id": 7,
       "options": {
@@ -753,7 +585,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -763,7 +595,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, wh_today/1000 AS \"kWh Hours Today\"\nFROM public.production\nWHERE $__timeFilter(reading_time)",
+          "rawSql": "SELECT max(reading_time) AS time, wh_today/1000\nFROM public.production\nWHERE $__timeFilter(reading_time)\nGROUP BY wh_today\nORDER BY 1 DESC\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -795,6 +627,357 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "fixedColor": "red",
+            "mode": "fixed"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 8
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "avS3Ylx4k"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT max(reading_time) AS time, wh_lifetime/1000*${cost_per_kwh}\nFROM public.consumption\nWHERE $__timeFilter(reading_time)\nGROUP BY wh_lifetime\nORDER BY 1 DESC\nLIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "reading_time",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "consumption"
+        }
+      ],
+      "title": "Lifetime Cost",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "avS3Ylx4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 4,
+        "y": 8
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "avS3Ylx4k"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT max(reading_time) AS time, wh_lifetime/1000\nFROM public.consumption\nWHERE $__timeFilter(reading_time)\nGROUP BY wh_lifetime\nORDER BY 1 DESC\nLIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Consumed Lifetime",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "avS3Ylx4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "text",
+            "mode": "continuous-RdYlGr"
+          },
+          "mappings": [],
+          "max": 200,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 8,
+        "y": 8
+      },
+      "id": 19,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "avS3Ylx4k"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  (max(p.wh_today)/max(c.wh_today))*100 AS \"Ratio\"\nFROM (\n  SELECT max(reading_time) AS time, wh_today\n  FROM public.consumption\n  WHERE $__timeFilter(reading_time)\n  GROUP BY wh_today\n  ORDER BY 1 DESC\n  LIMIT 1\n) AS c\nJOIN (\n  SELECT max(reading_time) AS time, wh_today\n  FROM public.production\n  WHERE $__timeFilter(reading_time)\n  GROUP BY wh_today\n  ORDER BY 1 DESC\n  LIMIT 1\n) AS p ON c.time = p.time;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "reading_time",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "consumption"
+        }
+      ],
+      "title": "Today's Ratio",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "avS3Ylx4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "text",
+            "mode": "continuous-RdYlGr"
+          },
+          "mappings": [],
+          "max": 200,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 12,
+        "y": 8
+      },
+      "id": 18,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "avS3Ylx4k"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  (max(p.wh_lifetime)/max(c.wh_lifetime))*100 AS \"Ratio\"\nFROM (\n  SELECT max(reading_time) AS time, wh_lifetime\n  FROM public.consumption\n  WHERE $__timeFilter(reading_time)\n  GROUP BY wh_lifetime\n  ORDER BY 1 DESC\n  LIMIT 1\n) AS c\nJOIN (\n  SELECT max(reading_time) AS time, wh_lifetime\n  FROM public.production\n  WHERE $__timeFilter(reading_time)\n  GROUP BY wh_lifetime\n  ORDER BY 1 DESC\n  LIMIT 1\n) AS p ON c.time = p.time;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "reading_time",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "consumption"
+        }
+      ],
+      "title": "Lifetime Ratio",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "avS3Ylx4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "thresholds"
           },
           "mappings": [],
@@ -815,8 +998,8 @@
       "gridPos": {
         "h": 3,
         "w": 4,
-        "x": 20,
-        "y": 7
+        "x": 16,
+        "y": 8
       },
       "id": 8,
       "options": {
@@ -836,7 +1019,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -846,7 +1029,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, wh_lifetime/1000 AS \"kWh Hours Lifetime\"\nFROM public.production\nWHERE $__timeFilter(reading_time)",
+          "rawSql": "SELECT max(reading_time) AS time, wh_lifetime/1000\nFROM public.production\nWHERE $__timeFilter(reading_time)\nGROUP BY wh_lifetime\nORDER BY 1 DESC\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -878,283 +1061,10 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "red",
-            "mode": "fixed"
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "currencyUSD"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 0,
-        "y": 10
-      },
-      "id": 14,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "avS3Ylx4k"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, (wh_today/1000)*${cost_per_kwh}\nFROM public.consumption\nWHERE $__timeFilter(reading_time)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [
-                  {
-                    "name": "reading_time",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          },
-          "table": "consumption"
-        }
-      ],
-      "title": "Today's Consumed Cost",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "avS3Ylx4k"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "red",
-            "mode": "fixed"
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "currencyUSD"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 4,
-        "y": 10
-      },
-      "id": 11,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "avS3Ylx4k"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, (wh_lifetime/1000)*${cost_per_kwh}\nFROM public.consumption\nWHERE $__timeFilter(reading_time)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [
-                  {
-                    "name": "reading_time",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          },
-          "table": "consumption"
-        }
-      ],
-      "title": "Lifetime Consumed Cost",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "avS3Ylx4k"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
             "fixedColor": "blue",
             "mode": "fixed"
           },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "currencyUSD"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 16,
-        "y": 10
-      },
-      "id": 13,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "avS3Ylx4k"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, (wh_today/1000)*${cost_per_kwh}\nFROM public.production\nWHERE $__timeFilter(reading_time)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [
-                  {
-                    "name": "reading_time",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          },
-          "table": "consumption"
-        }
-      ],
-      "title": "Today's Produced Savings",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "avS3Ylx4k"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
-          },
-          "decimals": 2,
+          "decimals": 0,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -1173,7 +1083,7 @@
         "h": 3,
         "w": 4,
         "x": 20,
-        "y": 10
+        "y": 8
       },
       "id": 15,
       "options": {
@@ -1190,7 +1100,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -1200,7 +1110,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroup(reading_time, '1m') AS time, (wh_lifetime/1000)*${cost_per_kwh}\nFROM public.production\nWHERE $__timeFilter(reading_time)",
+          "rawSql": "SELECT max(reading_time) AS time, wh_lifetime/1000*${cost_per_kwh}\nFROM public.production\nWHERE $__timeFilter(reading_time)\nGROUP BY wh_lifetime\nORDER BY 1 DESC\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1231,7 +1141,187 @@
           "table": "consumption"
         }
       ],
-      "title": "Lifetime Produced Savings",
+      "title": "Lifetime Savings",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "avS3Ylx4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "🪓"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 8,
+        "x": 0,
+        "y": 11
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "avS3Ylx4k"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT max(reading_time) AS time, wh_lifetime/1000/55.3\nFROM public.consumption\nWHERE $__timeFilter(reading_time)\nGROUP BY wh_lifetime\nORDER BY 1 DESC\nLIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "reading_time",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "consumption"
+        }
+      ],
+      "title": "Lifetime Trees Killed",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "avS3Ylx4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "🌲"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 8,
+        "x": 16,
+        "y": 11
+      },
+      "id": 20,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "avS3Ylx4k"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT max(reading_time) AS time, wh_lifetime/1000/55.3\nFROM public.production\nWHERE $__timeFilter(reading_time)\nGROUP BY wh_lifetime\nORDER BY 1 DESC\nLIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "reading_time",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "consumption"
+        }
+      ],
+      "title": "Lifetime Trees Saved",
       "type": "stat"
     },
     {
@@ -1343,7 +1433,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 14
       },
       "id": 10,
       "options": {
@@ -1579,7 +1669,7 @@
         "h": 13,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 25
       },
       "id": 17,
       "options": {
@@ -1595,14 +1685,9 @@
           "show": true
         },
         "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "Date"
-          }
-        ]
+        "sortBy": []
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -1612,7 +1697,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n    date_trunc('day', c.time) AS \"Date\",\n    c.wh_today/1000 AS \"kWh Consumed\",\n    p.wh_today/1000 AS \"kWh Produced\",\n    p.wh_today/c.wh_today*100 AS \"Ratio\"\nFROM (\n    SELECT date_trunc('day', reading_time) AS time, wh_today\n    FROM public.consumption\n    WHERE reading_time AT TIME ZONE '${timezone}' IN (\n        SELECT max(x.reading_time)\n        FROM (\n            SELECT reading_time AT TIME ZONE '${timezone}' AS reading_time, wh_today\n            FROM public.consumption\n            WHERE $__timeFilter(reading_time)\n        ) x\n        GROUP BY date_trunc('day', x.reading_time)\n    )\n) c\nJOIN (\n    SELECT date_trunc('day', reading_time) AS time, wh_today\n    FROM public.production\n    WHERE reading_time AT TIME ZONE '${timezone}' IN (\n        SELECT max(x.reading_time)\n        FROM (\n            SELECT reading_time AT TIME ZONE '${timezone}' AS reading_time, wh_today\n            FROM public.production\n            WHERE $__timeFilter(reading_time)\n        ) x\n        GROUP BY date_trunc('day', x.reading_time)\n    )\n) p ON c.time = p.time\nORDER BY 1 DESC",
+          "rawSql": "SELECT\n    c.time AS \"Date\",\n    c.wh_today/1000 AS \"kWh Consumed\",\n    p.wh_today/1000 AS \"kWh Produced\",\n    p.wh_today/c.wh_today*100 AS \"Ratio\"\nFROM (\n    SELECT cp.reading_time AT TIME ZONE 'UTC' AS time, cp.wh_today, cp.wh_lifetime\n    FROM (\n        SELECT reading_time AT TIME ZONE '${timezone}' AS reading_time, wh_today, wh_lifetime\n        FROM public.consumption\n    ) cp\n    WHERE cp.reading_time IN (\n        SELECT max(x.reading_time) FROM (\n            SELECT reading_time AT TIME ZONE '${timezone}' AS reading_time\n            FROM public.consumption\n        ) x\n        GROUP BY date_trunc('day', x.reading_time)\n    )\n) c\nJOIN (\n    SELECT pp.reading_time AT TIME ZONE 'UTC' AS time, pp.wh_today, pp.wh_lifetime\n    FROM (\n        SELECT reading_time AT TIME ZONE '${timezone}' AS reading_time, wh_today, wh_lifetime\n        FROM public.production\n    ) pp\n    WHERE pp.reading_time IN (\n        SELECT max(x.reading_time) FROM (\n            SELECT reading_time AT TIME ZONE '${timezone}' AS reading_time\n            FROM public.production\n        ) x\n        GROUP BY date_trunc('day', x.reading_time)\n    )\n) p ON c.time = p.time\nORDER BY 1 DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1647,7 +1732,7 @@
     "list": [
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "0.1456",
           "value": "0.1456"
         },
@@ -1668,7 +1753,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "America/Los_Angeles",
           "value": "America/Los_Angeles"
         },
@@ -1707,6 +1792,6 @@
   "timezone": "America/Los_Angeles",
   "title": "Solar Power",
   "uid": "-wWEQ_xVk",
-  "version": 25,
+  "version": 34,
   "weekStart": ""
 }
