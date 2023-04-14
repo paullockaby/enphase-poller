@@ -34,6 +34,29 @@ Once you've configured your poller to collect the data that you want, [there is 
 
 ![Example Grafana Dashboard for Enphase Poller](https://github.com/paullockaby/enphase-poller/blob/main/examples/basic-grafana-dashboard.png?raw=true)
 
+## Notes
+
+If you lose power during the day then your production and consumption data for the day will reset. This is because the Enphase device resets its counters and returns bad data. Currently the way to fix that is to wait until the next day after all of the readings for the day have finished. Then look at the database and find the last reading before the power went out and the last reading for the day. Then update the readings after the last reading before the power reset. (If the power resets multiple times then you may need to redo this.) Run these database queries:
+
+```
+SELECT reading_time, vah_today, varh_lag_today, varh_lead_today, wh_today FROM public.consumption ORDER BY reading_time;
+SELECT reading_time, vah_today, varh_lag_today, varh_lead_today, wh_today FROM public.production ORDER BY reading_time;
+
+-- change these values as appropriate
+UPDATE public.consumption SET
+    vah_today = vah_today + 40918.156,
+    varh_lag_today = varh_lag_today + 6065.929,
+    varh_lead_today = varh_lead_today + 14410.183,
+    wh_today = wh_today + 22639.963
+    WHERE reading_time > '2023-04-13 22:19:01+00' AND reading_time < '2023-04-14 07:05:10+00';
+UPDATE public.production SET
+    vah_today = vah_today + 30284.884,
+    varh_lag_today = varh_lag_today + 6064.926,
+    varh_lead_today = varh_lead_today + 193.035,
+    wh_today = wh_today + 24088.960
+    WHERE reading_time > '2023-04-13 22:19:01+00' AND reading_time < '2023-04-14 07:05:10+00';
+```
+
 ## Trademarks
 
 Enphase(R), Envoy(R) are trademarks of Enphase Energy(R).
