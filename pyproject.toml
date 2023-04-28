@@ -10,7 +10,7 @@ enphase_poller = "enphase_poller:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-requests = "^2.28.2"
+requests = "^2.29.0"
 psycopg = {extras = ["binary"], version = "^3.1.8"}
 tenacity = "^8.2.2"
 
