@@ -10,14 +10,14 @@ enphase_poller = "enphase_poller:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-requests = "^2.29.0"
-psycopg = {extras = ["binary"], version = "^3.1.8"}
+requests = "^2.30.0"
+psycopg = {extras = ["binary"], version = "^3.1.9"}
 tenacity = "^8.2.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.3.1"
 pytest-cov = "^4.0.0"
-pre-commit = "^3.2.2"
+pre-commit = "^3.3.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
