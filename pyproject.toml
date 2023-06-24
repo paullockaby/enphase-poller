@@ -15,7 +15,7 @@ psycopg = {extras = ["binary"], version = "^3.1.9"}
 tenacity = "^8.2.2"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^7.3.2"
+pytest = "^7.4.0"
 pytest-cov = "^4.1.0"
 pre-commit = "^3.3.3"
 
