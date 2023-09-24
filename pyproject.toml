@@ -11,7 +11,7 @@ enphase_poller = "enphase_poller:main"
 [tool.poetry.dependencies]
 python = "^3.11"
 requests = "^2.31.0"
-psycopg = {extras = ["binary"], version = "^3.1.10"}
+psycopg = {extras = ["binary"], version = "^3.1.11"}
 tenacity = "^8.2.3"
 
 [tool.poetry.group.dev.dependencies]
